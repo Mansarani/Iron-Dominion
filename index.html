@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IRON DOMINION - Epic Modern Military Action & Strategy</title>
+    <meta name="description" content="In 2045, command your elite military forces, manage resources, customizer weapons, and lead massive tactical skirmishes in Iron Dominion, the ultimate military strategy experience.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-sunset weather-clear">
+    <!-- Background Canvas for Atmospheric Particle Overlays (Rain, Snow, Sandstorm) -->
+    <canvas id="atmosphere-canvas" class="atmosphere-overlay"></canvas>
+
+    <!-- Scanline and Digital Noise Filters -->
+    <div class="hud-scanlines"></div>
+    <div class="hud-noise"></div>
+
+    <!-- Main HUD Header -->
+    <header class="hud-header">
+        <div class="header-left">
+            <div class="hud-logo">
+                <span class="logo-bracket">[</span>
+                <span class="logo-text">IRON DOMINION</span>
+                <span class="logo-bracket">]</span>
+            </div>
+            <div class="system-status">
+                <span class="status-pulse"></span>
+                <span class="status-text">COM-LINK: ESTABLISHED</span>
+            </div>
+        </div>
+        
+        <!-- Atmosphere Controls Widget -->
+        <div class="atmosphere-widget" id="atmosphere-controls">
+            <div class="control-group">
+                <span class="widget-label">TIME CYCLE:</span>
+                <button class="hud-btn time-btn active" data-time="sunset" id="btn-time-sunset">SUNSET</button>
+                <button class="hud-btn time-btn" data-time="day" id="btn-time-day">DAY</button>
+                <button class="hud-btn time-btn" data-time="night" id="btn-time-night">NIGHT-VISION</button>
+            </div>
+            <div class="control-group">
+                <span class="widget-label">WEATHER MOD:</span>
+                <button class="hud-btn weather-btn active" data-weather="clear" id="btn-weather-clear">CLEAR</button>
+                <button class="hud-btn weather-btn" data-weather="rain" id="btn-weather-rain">RAIN</button>
+                <button class="hud-btn weather-btn" data-weather="snow" id="btn-weather-snow">SNOW</button>
+                <button class="hud-btn weather-btn" data-weather="sandstorm" id="btn-weather-sandstorm">SANDSTORM</button>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="hud-time" id="hud-clock">11:30:00</div>
+            <button class="audio-toggle" id="audio-toggle-btn" aria-label="Toggle Interface Audio">
+                <span class="audio-icon">🔊</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- HUD Navigation Tabs -->
+    <nav class="hud-nav">
+        <button class="nav-tab active" data-target="tab-dossier" id="tab-btn-dossier">INTEL DOSSIER</button>
+        <button class="nav-tab" data-target="tab-simulator" id="tab-btn-simulator">BATTLE SIMULATOR</button>
+        <button class="nav-tab" data-target="tab-armory" id="tab-btn-armory">ARMS CUSTOMIZER</button>
+        <button class="nav-tab" data-target="tab-draft" id="tab-btn-draft">COMMAND DRAFT</button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="hud-main">
+
+        <!-- TAB 1: INTEL DOSSIER (Story, Factions, Features) -->
+        <section class="tab-panel active" id="tab-dossier">
+            <div class="grid-container grid-two-columns">
+                <!-- Left Column: Story & Factions -->
+                <div class="hud-panel story-briefing">
+                    <h1 class="panel-title">STRATEGIC BRIEFING</h1>
+                    <div class="panel-content">
+                        <div class="cover-image-container">
+                            <img src="assets/game_cover.png" alt="Iron Dominion Game Cover Art" class="game-cover-art" id="game-cover-img">
+                            <div class="cover-overlay"></div>
+                        </div>
+                        <p class="story-lead">In 2045, geopolitical tensions erupt into a global conflict after a powerful alliance invades neighboring territories to seize strategic resources.</p>
+                        <p class="story-text">Players command an elite military unit tasked with defending their homeland, leading large-scale operations across deserts, forests, snow-covered mountains, and modern cities. Build your army, upgrade weapons and vehicles, capture enemy bases, and make tactical decisions that influence the outcome of the war. Every mission changes the course of the conflict, leading to multiple endings.</p>
+                        
+                        <div class="faction-intel-section">
+                            <h2 class="section-subtitle">CONFLICT FACTIONS</h2>
+                            <div class="faction-cards">
+                                <div class="faction-card active" data-faction="vanguard" id="faction-card-vanguard">
+                                    <div class="faction-banner vanguard-bg">VANGUARD ALLIANCE</div>
+                                    <p class="faction-description">Homeland Defense Coalition. Specializes in tactical agility, advanced drone integration, and guerrilla counter-measures.</p>
+                                    <div class="faction-spec">COMMANDER: <span class="spec-val">Gen. Vance</span></div>
+                                    <div class="faction-spec">TRAIT: <span class="spec-val">Tactical Agility (+15% Speed)</span></div>
+                                </div>
+                                <div class="faction-card" data-faction="apex" id="faction-card-apex">
+                                    <div class="faction-banner apex-bg">APEX COALITION</div>
+                                    <p class="faction-description">Expansionist Ironclad Union. Focuses on crushing armor divisions, heavy artillery superiority, and explosive power.</p>
+                                    <div class="faction-spec">COMMANDER: <span class="spec-val">Col. Richter</span></div>
+                                    <div class="faction-spec">TRAIT: <span class="spec-val">Brute Force (+15% Firepower)</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Gameplay features & Battlefield view -->
+                <div class="hud-panel battlefield-dossier">
+                    <h2 class="panel-title">TACTICAL SYSTEM ANALYSIS</h2>
+                    <div class="panel-content">
+                        <div class="scene-image-container">
+                            <img src="assets/battlefield.png" alt="Volumetric Battlefield Concept Art" class="battlefield-scene-art" id="battlefield-scene-img">
+                            <div class="dossier-overlay-grid"></div>
+                        </div>
+                        
+                        <h3 class="section-subtitle">KEY FEATURES & GAMEPLAY ENGINE</h3>
+                        <ul class="feature-list">
+                            <li>
+                                <span class="feature-tag">100 VS 100</span>
+                                <span class="feature-desc">Dynamic AI skirmishes rendering hundreds of simulated units in real-time.</span>
+                            </li>
+                            <li>
+                                <span class="feature-tag">ARMORED WARFARE</span>
+                                <span class="feature-desc">Deploy heavy tanks, fighter jets, gunship helicopters, and surveillance drones.</span>
+                            </li>
+                            <li>
+                                <span class="feature-tag">DESTRUCTIBLE ENVIRONMENTS</span>
+                                <span class="feature-desc">Entire bases crumble under artillery fire, changing cover paths on the fly.</span>
+                            </li>
+                            <li>
+                                <span class="feature-tag">WEATHER CYCLES</span>
+                                <span class="feature-desc">Adapts to sandstorms, rain, and snow drift physics, impacting visibility and radar.</span>
+                            </li>
+                            <li>
+                                <span class="feature-tag">CO-OP COMMAND</span>
+                                <span class="feature-desc">Lead squads alongside co-op allies, ordering tactical moves via the HUD radial.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: TACTICAL BATTLE SIMULATOR -->
+        <section class="tab-panel" id="tab-simulator">
+            <div class="grid-container grid-sidebar-main">
+                <!-- Simulation Controls (Sidebar) -->
+                <div class="hud-panel sim-controls">
+                    <h2 class="panel-title">SIMULATOR DEPLOYMENT</h2>
+                    <div class="panel-content">
+                        <div class="control-slider">
+                            <div class="slider-header">
+                                <label for="input-troops">VANGUARD TROOPS</label>
+                                <span class="slider-value" id="val-troops">100</span>
+                            </div>
+                            <input type="range" id="input-troops" min="20" max="200" value="100" class="hud-slider">
+                        </div>
+
+                        <div class="control-slider">
+                            <div class="slider-header">
+                                <label for="input-tanks">T-95 ARMOR SUPPORT</label>
+                                <span class="slider-value" id="val-tanks">5</span>
+                            </div>
+                            <input type="range" id="input-tanks" min="0" max="15" value="5" class="hud-slider">
+                        </div>
+
+                        <div class="control-slider">
+                            <div class="slider-header">
+                                <label for="input-copters">HELI GUNSHIPS</label>
+                                <span class="slider-value" id="val-copters">2</span>
+                            </div>
+                            <input type="range" id="input-copters" min="0" max="6" value="2" class="hud-slider">
+                        </div>
+
+                        <div class="control-slider">
+                            <div class="slider-header">
+                                <label for="input-intel">TACTICAL INTEL ADVANTAGE</label>
+                                <span class="slider-value" id="val-intel">50%</span>
+                            </div>
+                            <input type="range" id="input-intel" min="0" max="100" value="50" class="hud-slider">
+                        </div>
+
+                        <div class="sim-actions">
+                            <button class="hud-btn primary-hud-btn" id="btn-start-simulation">COMMENCE OPERATION</button>
+                            <button class="hud-btn secondary-hud-btn" id="btn-reset-simulation">ABORT / RESET</button>
+                        </div>
+
+                        <!-- Live Stats HUD -->
+                        <div class="combat-metrics-panel">
+                            <h3 class="panel-sub-title">COMBAT FORCES</h3>
+                            <div class="forces-bars">
+                                <div class="force-meter-group">
+                                    <span class="force-label">VANGUARD (BLUE)</span>
+                                    <div class="meter-bar"><div class="meter-fill vanguard-bg" id="meter-vanguard" style="width: 100%;"></div></div>
+                                </div>
+                                <div class="force-meter-group">
+                                    <span class="force-label">APEX COALITION (RED)</span>
+                                    <div class="meter-bar"><div class="meter-fill apex-bg" id="meter-apex" style="width: 100%;"></div></div>
+                                </div>
+                            </div>
+                            <div class="force-numbers">
+                                <div>ACTIVE BLUE: <span id="num-vanguard">100</span></div>
+                                <div>ACTIVE RED: <span id="num-apex">100</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Visualizer (Main Pane) -->
+                <div class="hud-panel sim-visualization-pane">
+                    <h2 class="panel-title">TACTICAL ENGAGEMENT VIEWPORT</h2>
+                    <div class="panel-content visualizer-container">
+                        <!-- Canvas for Simulation -->
+                        <div class="canvas-wrapper">
+                            <canvas id="battle-simulation-canvas" width="800" height="450"></canvas>
+                            <div class="canvas-grid-overlay"></div>
+                            
+                            <!-- Static Overlay HUD during simulation -->
+                            <div class="hud-overlay-text top-left">TARGET: SECTOR 45-B</div>
+                            <div class="hud-overlay-text top-right" id="sim-timer-hud">00:00:00</div>
+                            <div class="hud-overlay-text bottom-left" id="sim-phase-hud">STATUS: AWAITING DEPLOYMENT</div>
+                            <div class="hud-overlay-text bottom-right" id="sim-fps-hud">FPS: 60</div>
+                        </div>
+                        
+                        <!-- Terminal feed ticker logs -->
+                        <div class="battle-log-terminal">
+                            <div class="terminal-header">
+                                <span>COMMS MONITOR FEED</span>
+                                <span class="blink-cursor">_</span>
+                            </div>
+                            <div class="terminal-body" id="battle-log-feed">
+                                <div class="log-line system-line">[SYS] Tactical map calibrated. Select assets and click "COMMENCE OPERATION".</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ARMS CUSTOMIZER -->
+        <section class="tab-panel" id="tab-armory">
+            <div class="grid-container grid-two-columns">
+                <!-- Weapon Preview Panel -->
+                <div class="hud-panel weapon-preview-panel">
+                    <h2 class="panel-title">TACTICAL Blueprint VIEW</h2>
+                    <div class="panel-content armory-content">
+                        <div class="weapon-canvas-container">
+                            <img src="assets/weapon_concept.png" alt="XM-80 Blueprint Rifle" class="weapon-blueprint-img" id="weapon-art">
+                            
+                            <!-- Tactical floating overlay markers -->
+                            <div class="hud-marker" style="top: 40%; left: 15%;" id="marker-muzzle">
+                                <span class="marker-dot"></span>
+                                <span class="marker-label">BARREL: STANDARD</span>
+                            </div>
+                            <div class="hud-marker" style="top: 25%; left: 55%;" id="marker-optic">
+                                <span class="marker-dot"></span>
+                                <span class="marker-label">OPTIC: IRON SIGHTS</span>
+                            </div>
+                            <div class="hud-marker" style="top: 70%; left: 35%;" id="marker-camo">
+                                <span class="marker-dot"></span>
+                                <span class="marker-label">CAMO: DEFAULT</span>
+                            </div>
+                        </div>
+
+                        <div class="loadout-summary">
+                            <h3>XM-80 SENTINEL LOADOUT CONFIGURATION</h3>
+                            <p>An elite, modular assault platform optimized for precision operations. Swapping components modifies muzzle velocity, target acquisition, and acoustic profiles.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customization Panel -->
+                <div class="hud-panel weapon-configurator-panel">
+                    <h2 class="panel-title">LOADOUT MODIFICATION</h2>
+                    <div class="panel-content">
+                        <!-- Customization Selector Modules -->
+                        <div class="mod-group">
+                            <h3 class="mod-title">OPTIC ATTACHMENT</h3>
+                            <div class="mod-options" id="optics-selection">
+                                <button class="mod-btn active" data-type="optic" data-val="standard" data-label="STANDARD IRON SIGHTS">IRON SIGHTS</button>
+                                <button class="mod-btn" data-type="optic" data-val="reddot" data-label="REFLEX RED DOT">RED-DOT</button>
+                                <button class="mod-btn" data-type="optic" data-val="acog" data-label="4X ACOG SCOPE">4X SCOPE</button>
+                                <button class="mod-btn" data-type="optic" data-val="thermal" data-label="HYBRID THERMAL">THERMAL</button>
+                            </div>
+                        </div>
+
+                        <div class="mod-group">
+                            <h3 class="mod-title">BARREL ATTACHMENT</h3>
+                            <div class="mod-options" id="barrel-selection">
+                                <button class="mod-btn active" data-type="barrel" data-val="standard" data-label="STANDARD MUZZLE">STANDARD</button>
+                                <button class="mod-btn" data-type="barrel" data-val="silencer" data-label="STEALTH SILENCER">SILENCER</button>
+                                <button class="mod-btn" data-type="barrel" data-val="compensator" data-label="HEAVY COMPENSATOR">COMPENSATOR</button>
+                            </div>
+                        </div>
+
+                        <div class="mod-group">
+                            <h3 class="mod-title">TACTICAL CAMOUFLAGE</h3>
+                            <div class="mod-options" id="camo-selection">
+                                <button class="mod-btn active" data-type="camo" data-val="standard" data-label="DEFAULT GRAPHITE">CARBON DEFAULT</button>
+                                <button class="mod-btn" data-type="camo" data-val="desert" data-label="DIGITAL DESERT">DIGITAL DESERT</button>
+                                <button class="mod-btn" data-type="camo" data-val="cyber" data-label="NEON STEALTH">CYBER STEALTH</button>
+                                <button class="mod-btn" data-type="camo" data-val="forest" data-label="WOODLAND CAMO">WOODLAND</button>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Stats -->
+                        <div class="weapon-stats-panel">
+                            <h3 class="panel-sub-title">PERFORMANCE METRICS</h3>
+                            
+                            <div class="stat-row">
+                                <div class="stat-meta">
+                                    <span>DAMAGE OUTPUT</span>
+                                    <span class="stat-number" id="val-stat-damage">72</span>
+                                </div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="bar-stat-damage" style="width: 72%;"></div></div>
+                            </div>
+
+                            <div class="stat-row">
+                                <div class="stat-meta">
+                                    <span>EFFECTIVE RANGE</span>
+                                    <span class="stat-number" id="val-stat-range">60</span>
+                                </div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="bar-stat-range" style="width: 60%;"></div></div>
+                            </div>
+
+                            <div class="stat-row">
+                                <div class="stat-meta">
+                                    <span>TARGET ACQUISITION</span>
+                                    <span class="stat-number" id="val-stat-handling">65</span>
+                                </div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="bar-stat-handling" style="width: 65%;"></div></div>
+                            </div>
+
+                            <div class="stat-row">
+                                <div class="stat-meta">
+                                    <span>SOUND SUPPRESSION</span>
+                                    <span class="stat-number" id="val-stat-stealth">10%</span>
+                                </div>
+                                <div class="stat-bar-bg"><div class="stat-bar-fill" id="bar-stat-stealth" style="width: 10%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: COMMAND DRAFT (Recruitment / ID card builder) -->
+        <section class="tab-panel" id="tab-draft">
+            <div class="grid-container grid-two-columns">
+                <!-- Registration Form -->
+                <div class="hud-panel draft-form-panel">
+                    <h2 class="panel-title">MILITARY SERVICE REGISTRATION</h2>
+                    <div class="panel-content">
+                        <p class="story-text" style="margin-bottom: 20px;">Enlist in the defense of the homeland. Register your commander dossier to generate your official, printable Vanguard military identification credentials.</p>
+                        
+                        <form id="draft-registration-form" onsubmit="return false;">
+                            <div class="form-field">
+                                <label for="commander-name">COMMANDER SURNAME</label>
+                                <input type="text" id="commander-name" placeholder="E.G. BRYANT" required class="hud-input">
+                            </div>
+
+                            <div class="form-field">
+                                <label for="commander-role">MILITARY SPECIALIZATION</label>
+                                <select id="commander-role" class="hud-input">
+                                    <option value="ASSAULT">ASSAULT DIVISION (HEAVY FORCE)</option>
+                                    <option value="RECON">RECON INTELLIGENCE (SNIPER/DRONE)</option>
+                                    <option value="ENGINEER">TACTICAL ENGINEER (BASE BUILDING)</option>
+                                    <option value="SUPPORT">LOGISTICS SUPPORT (MEDIC/ARTILLERY)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="commander-blood">BLOOD TYPE</label>
+                                <select id="commander-blood" class="hud-input">
+                                    <option value="A+">A POSITIVE (A+)</option>
+                                    <option value="O+">O POSITIVE (O+)</option>
+                                    <option value="B+">B POSITIVE (B+)</option>
+                                    <option value="AB+">AB POSITIVE (AB+)</option>
+                                    <option value="O-">O NEGATIVE (O-)</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="commander-signature">DIGITAL SIGNATURE INITIALS</label>
+                                <input type="text" id="commander-signature" placeholder="E.G. J.B." maxlength="4" required class="hud-input">
+                            </div>
+
+                            <button type="submit" class="hud-btn primary-hud-btn" id="btn-generate-id" style="width: 100%; margin-top: 10px;">AUTHORIZE DOSSIER GENERATION</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Printable ID Card Preview -->
+                <div class="hud-panel id-card-preview-panel">
+                    <h2 class="panel-title">CREDENTIAL CARD RENDER</h2>
+                    <div class="panel-content id-card-center-content">
+                        <!-- Canvas rendering the actual card -->
+                        <div class="id-card-wrapper">
+                            <canvas id="id-card-canvas" width="400" height="250"></canvas>
+                        </div>
+                        <div class="id-card-actions">
+                            <button class="hud-btn secondary-hud-btn" id="btn-download-id" disabled>EXPORT CREDENTIALS (.PNG)</button>
+                            <span class="status-warning" style="font-size: 11px; color: var(--hud-amber);" id="id-download-status">AWAITING FORCES AUTHORIZATION</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer HUD -->
+    <footer class="hud-footer">
+        <div class="footer-left">
+            <span>SECURE LINK: TERMINAL 097-ALPHA</span>
+        </div>
+        <div class="footer-center">
+            <span>© 2045 IRON DOMINION CONFLICT MONITOR. NO COPYRIGHT DATA CONFLICTS IN THIS REGION.</span>
+        </div>
+        <div class="footer-right">
+            <span>VOLTAGE: 230V // SIG: DECRYP_</span>
+        </div>
+    </footer>
+
+    <!-- Import JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
